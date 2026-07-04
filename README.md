@@ -130,7 +130,16 @@ Repository Structure
 │   ├── *.*  
 │   └── *.* 
 │
+├── readme-appendices/
+│   ├── *.*  
+│   └── *.* 
+│
 └── README.md
+
+Exercises
+---------
+[Exercises](/readme-appendices/readme-exercises.txt)  
 
 Data Dictionary
 ---------------
+[Data Dictionary](/readme-appendices/readme-data-dictionary.txt)
