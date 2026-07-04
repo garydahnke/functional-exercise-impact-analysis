@@ -138,8 +138,8 @@ Repository Structure
 
 Exercises
 ---------
-[Exercises](/readme-appendices/readme-exercises.txt)  
+[Exercises](/readme-appendices/readme-exercises.md)  
 
 Data Dictionary
 ---------------
-[Data Dictionary](/readme-appendices/readme-data-dictionary.txt)
+[Data Dictionary](/readme-appendices/readme-data-dictionary.md)
