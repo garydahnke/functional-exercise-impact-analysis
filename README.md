@@ -115,7 +115,7 @@ Repository Structure
 --------------------
 │  
 ├── data/  
-│ ├── fitness-data.odp  
+│ ├── fitness-log.odp  
 │ └── archive/  
 │  
 ├── notebooks/  
