@@ -86,20 +86,20 @@ Planned Analysis
 	-Daily health correlations  
 	
 How to Rate Flexibility Without Guessing - Use reliable subjective measure. 
-1. Use CAR movements - CARs are perfect because they expose:  
+1. Use CAR movements - CARs expose:  
 	-end-range control  
 	-stiffness  
 	-smoothness  
 	-joint clicking  
 	-discomfort  
 2. Use “end-range feel” - Ask yourself:
-	-Does the joint feel blocked?
-	-Does it glide smoothly?
-	-Does it feel tight at the end?
+	-Does the joint feel blocked?  
+	-Does it glide smoothly?  
+	-Does it feel tight at the end?  
 3. Use movement quality - Rate:
-	-smoothness
-	-control
-	-stability
+	-smoothness  
+	-control  
+	-stability  
 	-ease	
 	
 
