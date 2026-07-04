@@ -6,7 +6,7 @@ Project Overview
 This project analyzes the impact of functional exercises, mobility work, tendon strengthening, and cardio on my weight training performance, 
 recovery, and overall physical health.
 
-This project uses structured data collection and analysis to answer a central question:
+The purpose project is to use structured data collection and analysis to answer a central question:
 How do functional/mobility exercises influence strength performance, recovery, soreness, and nervous system readiness in a long-term lifter?
 
 Motivation
