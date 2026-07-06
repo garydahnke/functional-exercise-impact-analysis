@@ -1,0 +1,32 @@
+# Pandas Workflow Template: Copy and Modification
+
+## 1. Filtering rows
+subset = df.loc[df["Workout Type"] == "Weight Training"]
+
+## 2. Selecting rows + columns
+subset = df.loc[
+    (df["Workout Type"] == "Weight Training") &
+    (df["Exercise"] != "Pull Ups"),
+    ["Date","Exercise","Sets","Reps","Weight","Workout Type"]
+]
+
+## 3. When you plan to modify
+subset = df.loc[
+    (df["Workout Type"] == "Weight Training") &
+    (df["Exercise"] != "Pull Ups"),
+    ["Date","Exercise","Sets","Reps","Weight","Workout Type"]
+].copy()
+
+## 4. Modifying safely
+subset["Date"] = pd.to_datetime(subset["Date"])
+subset = subset.sort_values("Date")
+
+## 5. Best practices summary
+- Use .copy() whenever you plan to modify a filtered subset.
+- Skip .copy() if you're only reading values.
+- Avoid chained assignment.
+- Use type checks if unsure.
+
+## Grounded takeaway
+Without .copy(): may get a view, leading to warnings.
+With .copy(): new DataFrame in memory, safe for modifications.
