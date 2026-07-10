@@ -5,8 +5,8 @@ Purpose: This program generates Daily Protein Intake report for one or more user
          Consumption'.
          User Set Variables:
          1. spreadsheet - fitness log spreadsheet
-         2. month-name-list - a list of months to generate charts 
-         3. output-type - a flag to define the type of output for the chart 
+         2. month_name_list - a list of months to generate charts 
+         3. output_type - a flag to define the type of output for the chart 
             options: file or online        
 Author: Gary Dahnke
 Date: July 2026
