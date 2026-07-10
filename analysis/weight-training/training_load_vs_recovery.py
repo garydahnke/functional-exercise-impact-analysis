@@ -5,10 +5,10 @@ Purpose: This program generates a monthly Training Load vs. Recovery chart based
          month within the same calendar year.
          User Set Variables:
          1. spreadsheet - fitness log spreadsheet
-         2. month-name-list - a list of months to generate charts
-         3. data-annotation -  a flag to display the date of each data point on the char
+         2. month_name_list - a list of months to generate charts
+         3. date_annotation -  a flag to display the date of each data point on the char
             options: Y or N
-         4. output-type - a flag to define the type of output for the chart 
+         4. output_type - a flag to define the type of output for the chart 
             options: file or online
 Author: Gary Dahnke
 Date: July 2026
