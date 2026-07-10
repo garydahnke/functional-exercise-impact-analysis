@@ -8,7 +8,7 @@ Purpose: This program generates Training Load per Exercise report for a selected
          1. spreadsheet - fitness log spreadsheet
          2. execises - a list of weight training exercise that the user wants to create charts. If the
             list is left, a default list of all weight training exercise will be processed
-         2. output-type - a flag to define the type of output for the chart 
+         2. output_type - a flag to define the type of output for the chart 
             options: file or online          
 Author: Gary Dahnke
 Date: July 2026
