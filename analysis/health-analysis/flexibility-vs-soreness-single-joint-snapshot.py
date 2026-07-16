@@ -26,7 +26,7 @@ spreadsheet = "fitness-log.ods"
 start_date = pd.to_datetime("2026-07-02")
 end_date = start_date + timedelta(days=7)
 joint = "Shoulder"
-output_type = "file" # file or online
+output_type = "online" # file or online
 """
 User Set Variables - End
 """
@@ -59,8 +59,6 @@ x = np.arange(len(chart_dates))
 width = 0.35
 plt.figure(figsize=(12, 6))
 
-# Generate side-by-side bar chart
-plt.figure(figsize=(12, 6))
 # Generate bars for joint flexibility and soreness
 plt.bar(x - width/2, joint_flexibility, width, label=f"{joint} Flexibility")
 plt.bar(x + width/2, joint_soreness, width, label=f"{joint} Soreness")
@@ -74,8 +72,10 @@ plt.yticks(range(0, min(10,max_joint_value + 1)))
 if len(chart_dates) > 1:
     date_range = f"{chart_dates[0].strftime("%B %d, %Y")} -".strip() + " " + \
         f"{chart_dates[(len(chart_dates) - 1)].strftime("%B %d, %Y")}".strip()
+    file_date = f"{start_date.strftime("%Y-%B-%d")}" + "-" + f"{end_date.strftime("%Y-%B-%d")}" 
 else:
     date_range = f"{chart_dates[0].strftime("%B %d, %Y")}"
+    file_date = f"{chart_dates[0].strftime("%Y-%B-%d")}"
 plt.title(f"{joint} Flexibility vs Soreness — Single Joint, Mulit‑Day Snapshot: {date_range.strip()}")
 plt.legend()
 plt.tight_layout()
