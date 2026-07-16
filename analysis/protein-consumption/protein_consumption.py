@@ -1,6 +1,6 @@
 """
 Script: monthly_protein_consumption.py
-Purpose: This program generates Daily Protein Intake chart for one or more user selected  months or 
+Purpose: This program generates Daily Protein Intake chart for one or more user selected months or 
          for all months for the same calendar year from fitness-log.ods spreadsheet - sheet 'Protein 
          Consumption'.
          User Set Variables:
