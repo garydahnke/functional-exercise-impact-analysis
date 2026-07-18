@@ -1,8 +1,3 @@
-Functional Exercise Impact on Weight Training - A Data Analytics Project by Gary Dahnke
----------------------------------------------------------------------------------------
-
-![Functional Exercise Impact on Weight Training](/source-code/images/minimalist-fitness-emblem.png)
-
 <h2 align="center">Functional Exercise Impact on Weight Training</h2>
 <h2 align="center">A Data Analytics Project by Gary Dahnke</h2>
 <p align="center">
