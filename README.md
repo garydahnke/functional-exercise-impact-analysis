@@ -3,6 +3,12 @@ Functional Exercise Impact on Weight Training - A Data Analytics Project by Gary
 
 ![Functional Exercise Impact on Weight Training](/source-code/images/minimalist-fitness-emblem.png)
 
+<h2 align="center">Functional Exercise Impact on Weight Training</h2>
+<h2 align="center">A Data Analytics Project by Gary Dahnke</h2>
+<p align="center">
+  <img src="source-code/images/minimalist-fitness-emblem.png" width="400">
+</p>
+
 Project Overview
 ----------------
 This project analyzes the impact of functional exercises, mobility work, tendon strengthening, and cardio on my weight training performance, 
