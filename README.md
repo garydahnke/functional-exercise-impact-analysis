@@ -95,11 +95,11 @@ How to Rate Flexibility Without Guessing - Use reliable subjective measure.
 	-smoothness  
 	-joint clicking  
 	-discomfort  
-2. Use “end-range feel” - Ask yourself:
+2. Use “end-range feel” - Ask yourself:   
 	-Does the joint feel blocked?  
 	-Does it glide smoothly?  
 	-Does it feel tight at the end?  
-3. Use movement quality - Rate:
+3. Use movement quality - Rate:  
 	-smoothness  
 	-control  
 	-stability  
