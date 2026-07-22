@@ -5,10 +5,9 @@ Purpose: This program generates side-by-side bar chart (Flexibility vs Soreness 
          data is extracted from the fitness-log.ods spreadsheet - sheet 'Daily_Health_Log'. Data 
          in the spreadsheet is for one calendar year. 
          User Set Variables:
-         1. spreadsheet - fitness log spreadsheet
-         2. start_date - starting date of the data to be extracted
-         3. joint - set the joint (Shoulder, Elbow, Wrist, Hip, Knee, Ankle) to generate a chart
-         4. output_type - a flag to define the type of output for the chart 
+         1. start_date - starting date of the data to be extracted
+         2. joint - set the joint (Shoulder, Elbow, Wrist, Hip, Knee, Ankle) to generate a chart
+         3. output_type - a flag to define the type of output for the chart 
             options: file or online          
 Author: Gary Dahnke
 Date: July 2026
@@ -23,9 +22,9 @@ from datetime import datetime, timedelta
 """
 User Set Variables - Start
 """
-spreadsheet = "fitness-log.ods"
 start_date = pd.to_datetime("2026-07-02")
 end_date = start_date + timedelta(days=7)
+print(end_date)
 joint = "shoulder".lower().capitalize()
 output_type = "file" # file or online
 """
@@ -34,7 +33,7 @@ User Set Variables - End
 # Retrieve all data from the 'Daily_Health_Log' sheet and load into a dataframe
 sheet = "Daily_Health_Log"
 try:
-    daily_log_data = pd.read_excel(spreadsheet, sheet_name=sheet)
+    daily_log_data = pd.read_excel(analytics.spreadsheet, sheet_name=sheet)
 except FileNotFoundError:
     print("File does not exist.")
 
@@ -71,34 +70,34 @@ plt.yticks(range(1,11))
 if len(chart_dates) > 1:
     date_range = f"{chart_dates[0].strftime("%B %d, %Y")} -".strip() + " " + \
         f"{chart_dates[(len(chart_dates) - 1)].strftime("%B %d, %Y")}".strip()
-    file_date = f"{start_date.strftime("%Y-%B-%d")}" + "-" + f"{end_date.strftime("%Y-%B-%d")}" 
+    file_date = f"{start_date.strftime("%Y-%b-%d")}" + "-" + f"{end_date.strftime("%Y-%b-%d")}" 
 else:
     date_range = f"{chart_dates[0].strftime("%B %d, %Y")}"
-    file_date = f"{chart_dates[0].strftime("%Y-%B-%d")}"
+    file_date = f"{chart_dates[0].strftime("%Y-%b-%d")}"
 plt.title(f"{joint} Flexibility vs Soreness — Single Joint, Mulit‑Day Snapshot: {date_range.strip()}")
 plt.legend()
 plt.tight_layout()
     
+print(date_range)
+print(file_date)
+
 # Output chart to a file or online
 if output_type == "file":
     # Save charts as *.svg and *.pdf files.
-    file_date = start_date.strftime("%Y-%B-%d")   
-    try:
-        print("-" * 60)
-        filename = f"{analytics.health_analysis_charts}flexibility-vs-soreness-{joint.lower()}-joint-snapshot-{file_date}.svg"
-        print(f"Creating {filename}")
-        plt.savefig(filename)
-        filename = f"{analytics.health_analysis_charts}flexibility-vs-soreness-{joint.lower()}-joint-snapshot-{file_date}.pdf"
-        print(f"Creating {filename}")
-        plt.savefig(filename)
-    except FileNotFoundError:
-        print("Directory does not exist.")
-    except PermissionError:
-        print(f"No permission to write the {filename}.")
-    except OSError as e:
+    print("-" * 60)
+    for extension in analytics.file_extensions:   
+        try:
+            name = f"{analytics.health_analysis_charts}flexibility-vs-soreness-{joint.lower()}-snapshot-{file_date}"
+            filename = name + extension
+            print(f"Creating {filename}")
+            plt.savefig(filename)  
+        except FileNotFoundError:
+            print("Directory does not exist.")
+        except PermissionError:
+            print(f"No permission to write the {filename}.")
+        except OSError as e:
             print(f"OS error occurred: {e}")
-    finally:
-        print(f"Files for {joint} Joint have been created.")
+    print(f"Files for {joint} Joint have been created.")
 else:
     # Generate image for chart.
     print("-" * 60)  

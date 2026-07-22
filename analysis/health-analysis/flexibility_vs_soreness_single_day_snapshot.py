@@ -6,10 +6,9 @@ Purpose: This program generates side-by-side bar chart (Flexibility vs Soreness 
          spreadsheet is for one calendar year. A user can generate a chart for multiple days is
          possible.
          User Set Variables:
-         1. spreadsheet - fitness log spreadsheet
-         2. start_date - starting date of the data to be extracted
-         3. end_date - ending date of the data to be extracted
-         4. output_type - a flag to define the type of output for the chart 
+         1. start_date - starting date of the data to be extracted
+         2. end_date - ending date of the data to be extracted
+         3. output_type - a flag to define the type of output for the chart 
             options: file or online          
 Author: Gary Dahnke
 Date: July 2026
@@ -23,7 +22,6 @@ import numpy as np
 """
 User Set Variables - Start
 """
-spreadsheet = "fitness-log.ods"
 start_date = pd.to_datetime("2026-07-12")
 end_date = pd.to_datetime("2026-07-15")
 output_type = "file" # file or online
@@ -33,7 +31,7 @@ User Set Variables - End
 # Retrieve all data from the 'Daily_Health_Log' sheet and load into a dataframe
 sheet = "Daily_Health_Log"
 try:
-    daily_log_data = pd.read_excel(spreadsheet, sheet_name=sheet)
+    daily_log_data = pd.read_excel(analytics.spreadsheet, sheet_name=sheet)
 except FileNotFoundError:
     print("File does not exist.")
 
@@ -48,7 +46,7 @@ end = pd.to_datetime(end_date)
 chart_data = daily_log_data[(daily_log_data["Date"] >= start) & (daily_log_data["Date"] <= end)]
 
 for date in chart_data["Date"]:
-    file_date = date.strftime("%Y-%B-%d")
+    file_date = date.strftime("%Y-%b-%d")
     chart_date = date.strftime("%B %d, %Y")
     # Define joints and pair columns
     joints = ["Shoulder", "Elbow", "Wrist", "Hip", "Knee", "Ankle"]
@@ -88,23 +86,21 @@ for date in chart_data["Date"]:
     
     # Output chart to a file or online
     if output_type == "file":
-        # Save charts as *.svg and *.pdf files.   
-        try:
-            print("-" * 60)
-            filename = f"{analytics.health_analysis_charts}flexibility-vs-soreness-single-day-snapshot-{file_date}.svg"
-            print(f"Creating {filename}")
-            plt.savefig(filename)
-            filename = f"{analytics.health_analysis_charts}flexibility-vs-soreness-single-day-snapshot-{file_date}.pdf"
-            print(f"Creating {filename}")
-            plt.savefig(filename)
-        except FileNotFoundError:
-            print("Directory does not exist.")
-        except PermissionError:
-            print(f"No permission to write the {filename}.")
-        except OSError as e:
-            print(f"OS error occurred: {e}")
-        finally:
-            print(f"Files for {file_date} have been created.")
+        # Save charts as *.svg and *.pdf files.
+        print("-" * 60)
+        for extension in analytics.file_extensions:   
+            try:
+                name = f"{analytics.health_analysis_charts}flexibility-vs-soreness-single-day-snapshot-{file_date}"
+                filename = name + extension
+                print(f"Creating {filename}")
+                plt.savefig(filename)   
+            except FileNotFoundError:
+                print("Directory does not exist.")
+            except PermissionError:
+                print(f"No permission to write the {filename}.")
+            except OSError as e:
+                print(f"OS error occurred: {e}")
+        print(f"Files for {file_date} have been created.")
     else:
         # Generate image for chart. 
         print("-" * 60) 
