@@ -22,9 +22,8 @@ from datetime import datetime, timedelta
 """
 User Set Variables - Start
 """
-start_date = pd.to_datetime("2026-07-02")
+start_date = pd.to_datetime("2026-07-14")
 end_date = start_date + timedelta(days=7)
-print(end_date)
 joint = "shoulder".lower().capitalize()
 output_type = "file" # file or online
 """
@@ -78,9 +77,6 @@ plt.title(f"{joint} Flexibility vs Soreness — Single Joint, Mulit‑Day Snapsh
 plt.legend()
 plt.tight_layout()
     
-print(date_range)
-print(file_date)
-
 # Output chart to a file or online
 if output_type == "file":
     # Save charts as *.svg and *.pdf files.
