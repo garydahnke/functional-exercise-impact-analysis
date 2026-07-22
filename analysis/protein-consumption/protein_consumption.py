@@ -1,12 +1,11 @@
 """
-Script: monthly_protein_consumption.py
+Script: protein_consumption.py
 Purpose: This program generates Daily Protein Intake chart for one or more user selected months or 
          for all months for the same calendar year from fitness-log.ods spreadsheet - sheet 'Protein 
          Consumption'.
          User Set Variables:
-         1. spreadsheet - fitness log spreadsheet
-         2. month_name_list - a list of months to generate charts 
-         3. output_type - a flag to define the type of output for the chart 
+         1. month_name_list - a list of months to generate charts 
+         2. output_type - a flag to define the type of output for the chart 
             options: file or online        
 Author: Gary Dahnke
 Date: July 2026
@@ -21,7 +20,6 @@ import analytics
 """
 User Set Variables - Start
 """
-spreadsheet = "fitness-log.ods"
 month_name_list = []
 # month_name_list = ["May","June","July"]
 # month_name_list = ["May","June"]
@@ -32,7 +30,7 @@ User Set Variables - End
 # Retrieve all data from the 'Protein_Consumption' sheet and load into a dataframe
 sheet = "Protein_Consumption"
 try:
-    protein_data = pd.read_excel(spreadsheet, sheet_name=sheet)
+    protein_data = pd.read_excel(analytics.spreadsheet, sheet_name=sheet)
 except FileNotFoundError:
     print("File does not exist.")
 
@@ -91,23 +89,22 @@ for month_number in month_number_list:
     
     # Output chart to a file or online
     if output_type == "file":
-        # Save charts as *.svg and *.pdf files.    
-        try:
-            print("-" * 60)
-            filename = f"{analytics.protein_consumption_charts}protein-consumption-for-{year}-{month_name.lower()}.svg"
-            print(f"Creating {filename}")
-            plt.savefig(filename)
-            filename = f"{analytics.protein_consumption_charts}protein-consumption-for-{year}-{month_name.lower()}.pdf"
-            print(f"Creating {filename}")
-            plt.savefig(filename)
-        except FileNotFoundError:
-            print("Directory does not exist.")
-        except PermissionError:
-            print(f"No permission to write the {filename}.")
-        except OSError as e:
-            print(f"OS error occurred: {e}")
-        finally:
-            print(f"Files for {month_name} of {year} have been created.")
+        # Save charts as *.svg and *.pdf files. 
+        print("-" * 60)
+        file_month_name = datetime.datetime.strptime(month_name, "%B").strftime("%b")
+        for extension in analytics.file_extensions:     
+            try:
+                name = f"{analytics.protein_consumption_charts}protein-consumption-for-{year}-{file_month_name.lower()}"
+                filename = name + extension
+                print(f"Creating {filename}")
+                plt.savefig(filename)    
+            except FileNotFoundError:
+                print("Directory does not exist.")
+            except PermissionError:
+                print(f"No permission to write the {filename}.")
+            except OSError as e:
+                print(f"OS error occurred: {e}")
+        print(f"Files for {month_name} of {year} have been created.")
     else:
         # Generate image for chart.
         print("-" * 60)  
