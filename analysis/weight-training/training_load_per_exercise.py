@@ -21,7 +21,6 @@ import analytics
 """
 User Set Variables - Start
 """
-spreadsheet = "fitness-log.ods"
 # To run one or more selected exercises, populate the list 'exercises'. Otherwise, the program will
 # create a list with all exercises currently listed in the spreadsheet.
 exercises = []
@@ -34,12 +33,12 @@ User Set Variables - End
 # Retrieve all data from the 'Workouts' sheet and load into a dataframe.
 sheet = "Workouts"
 try:
-    exercise_data = pd.read_excel(spreadsheet, sheet_name=sheet)
+    exercise_data = pd.read_excel(analytics.spreadsheet, sheet_name=sheet)
 except FileNotFoundError:
     print("File does not exist.")
 
 # Retrieve all data from the 'Workouts' sheet for weight training and load into a dataframe.
-weight_training_data = exercise_data.loc[(exercise_data["Workout Type"] == "Weight Training") & (exercise_data["Exercise"] != "Pull Ups"), \
+weight_training_data = exercise_data.loc[(exercise_data["Workout Type"] == "Weight Training") & (exercise_data["Weight"] != "Body Weight"), \
     ["Date","Exercise","Sets","Reps","Weight","Workout Type"]].copy()
 
 # Select the rows from the dataframe that are exercises in the list 'exercises'.
@@ -98,23 +97,21 @@ for current_exercise in exercises:
 
     # Output chart to a file or online
     if output_type == "file":
-        # Save charts as *.svg and *.pdf files.   
-        try:
-            print("-" * 60)
-            filename = f"{analytics.weight_training_charts}training-load-for-{current_exercise.lower().replace(" ","-")}.svg"
-            print(f"Creating {filename}")
-            plt.savefig(filename)
-            filename = f"{analytics.weight_training_charts}training-load-for-{current_exercise.lower().replace(" ","-")}.pdf"
-            print(f"Creating {filename}")
-            plt.savefig(filename)
-        except FileNotFoundError:
-            print("Directory does not exist.")
-        except PermissionError:
-            print(f"No permission to write the {filename}.")
-        except OSError as e:
-            print(f"OS error occurred: {e}")
-        finally:
-            print(f"Files for execise {current_exercise} have been created.")
+        # Save charts as *.svg and *.pdf files.
+        print("-" * 60)
+        for extension in analytics.file_extensions:     
+            try:
+                name = f"{analytics.weight_training_charts}training-load-for-{current_exercise.lower().replace(" ","-")}"
+                filename = name + extension
+                print(f"Creating {filename}")
+                plt.savefig(filename)   
+            except FileNotFoundError:
+                print("Directory does not exist.")
+            except PermissionError:
+                print(f"No permission to write the {filename}.")
+            except OSError as e:
+                print(f"OS error occurred: {e}")
+        print(f"Files for execise {current_exercise} have been created.")
     else:
         # Generate image for chart. 
         print("-" * 60) 
