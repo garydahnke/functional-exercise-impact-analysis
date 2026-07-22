@@ -39,6 +39,23 @@ weight_training_charts = "charts/weight-training/"
 file_extensions = [".pdf", ".svg"]
 spreadsheet = "fitness-log.ods"
 
+import calendar
+
+def month_name_to_number(name: str) -> int:
+    if len(name) == 3:
+        return month_name_abbr_to_number(name)
+    else:
+        return month_name_full_to_number(name)
+
+def month_name_full_to_number(name: str) -> int:
+    # Normalize capitalization
+    name = name.lower().capitalize()
+    # Convert using lookup list
+    return list(calendar.month_name).index(name)
+
+def month_name_abbr_to_number(abbr: str) -> int:
+    abbr = abbr.lower().capitalize()
+    return list(calendar.month_abbr).index(abbr)
 
 def show_scatter_marker():
     return scatter_markers
