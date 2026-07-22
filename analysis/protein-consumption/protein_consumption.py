@@ -20,8 +20,8 @@ import analytics
 """
 User Set Variables - Start
 """
-month_name_list = []
-# month_name_list = ["May","June","July"]
+#month_name_list = []
+month_name_list = ["June","July"]
 # month_name_list = ["May","June"]
 output_type = "file" # file or online
 """
@@ -36,40 +36,41 @@ except FileNotFoundError:
 
 # Build a list of months to pull data from the protein_data dataframe
 year = str(protein_data["Date"].dt.year.unique()[0])
-if len(month_name_list) == 0:
-    month_number_list = [datetime.datetime.strptime(month_name, "%B").month  \
+month_number_list = []
+print(len(month_name_list))
+if len(month_name_list) > 0:
+    month_number_list = [analytics.month_name_to_number(month_name)  \
                         for month_name in month_name_list]
-if len(month_number_list) == 0:
-    month_number_list = protein_data["Date"].dt.month.unique()    
+    print("here")
+else: 
+    month_number_list = protein_data["Date"].dt.month.unique().tolist()
+
 
 # Process each month of data to create the charts as files
 for month_number in month_number_list:
     month_name = calendar.month_name[month_number]
-# Load all the data for the month select from the intial dataframe
+    month_name_abbr = calendar.month_abbr[month_number]
+    # Load all the data for the month select from the intial dataframe
     monthly_protein_data = protein_data[protein_data["Date"].dt.month == month_number] 
-# Retrieve all the protein data that was below the threshold
+    # Retrieve all the protein data that was below the threshold
     low_protein_data = monthly_protein_data.loc[monthly_protein_data["Protein Grams"] < 90, ["Date","Protein Grams"]]
-# print("Low Protein Data")
-# print(low_protein_data)
 
-# Retrieve all the protein data that exceeded the threshold
+    # Retrieve all the protein data that exceeded the threshold
     high_protein_data = monthly_protein_data.loc[monthly_protein_data["Protein Grams"] >= 90, ["Date","Protein Grams"]]
-# print("High Protein Data")
-# print(high_protein_data)
 
     plt.figure(figsize=(12,6))
-# Plot all Protein Intake data exlcuding plot points but draw line between points
-# Note that 'marker=o' is excluded
+    # Plot all Protein Intake data exlcuding plot points but draw line between points
+    # Note that 'marker=o' is excluded
     plt.plot(monthly_protein_data["Date"], monthly_protein_data["Protein Grams"], label="Protein Intake")
 
-# Plot all Low Protein Intake data
+    # Plot all Low Protein Intake data
     plt.scatter(low_protein_data["Date"], low_protein_data["Protein Grams"],
             c="red", label="Below 90g", marker="o")
-# Plot all High Protein Intake data
+    # Plot all High Protein Intake data
     plt.scatter(high_protein_data["Date"], high_protein_data["Protein Grams"],
             c="green", label="At/Above 90g", marker="o")
 
-# Add threshold line
+    # Add threshold line
     plt.axhline(90, color="gray", linestyle="--", label="90g Threshold")
 
     for date, grams in zip(low_protein_data["Date"], low_protein_data["Protein Grams"]):
@@ -79,6 +80,7 @@ for month_number in month_number_list:
                     textcoords="offset points",
                     ha="center",
                     color="red")
+
 
     plt.title(f"Daily Protein Intake For {month_name.lower().capitalize()} {year}")
     plt.xlabel("Date")
@@ -91,10 +93,9 @@ for month_number in month_number_list:
     if output_type == "file":
         # Save charts as *.svg and *.pdf files. 
         print("-" * 60)
-        file_month_name = datetime.datetime.strptime(month_name, "%B").strftime("%b")
         for extension in analytics.file_extensions:     
             try:
-                name = f"{analytics.protein_consumption_charts}protein-consumption-for-{year}-{file_month_name.lower()}"
+                name = f"{analytics.protein_consumption_charts}protein-consumption-for-{year}-{month_name_abbr.lower()}"
                 filename = name + extension
                 print(f"Creating {filename}")
                 plt.savefig(filename)    
