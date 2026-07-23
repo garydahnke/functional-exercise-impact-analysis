@@ -1,5 +1,5 @@
 """
-Script: flexibility-vs-soreness-single-day-snapshot.py
+Script: joint-flexibility-tracking.py
 Purpose: This program generates line chart of Joint Flexibility for a user-defined time frame. 
          The user selects the joint to display in the 'joints' variable described below. All
          data is extracted from the fitness-log.ods spreadsheet - sheet 'Daily_Health_Log'. Data 
@@ -27,7 +27,7 @@ User Set Variables - Start
 joints = [("Shoulder",True),("Elbow",True),("Wrist",True), \
           ("Hip",True),("Knee",True),("Ankle",True)]
 start_date = pd.to_datetime("2026-07-01")
-end_date = pd.to_datetime("2026-07-15")
+end_date = pd.to_datetime("2026-07-22")
 output_type = "file" # file or online
 """
 User Set Variables - End
@@ -94,7 +94,7 @@ if output_type == "file":
     file_date = start_date.strftime("%Y-%b-%d") + "-" + end_date.strftime("%Y-%b-%d")
     for extension in analytics.file_extensions:     
         try:
-            name = f"{analytics.health_analysis_charts}joint-flexibility-tracking-{file_date}"
+            name = f"{analytics.health_analysis_charts}joint-flexibility-tracking-{file_date}".lower()
             filename = name + extension
             print(f"Creating {filename}")
             plt.savefig(filename)

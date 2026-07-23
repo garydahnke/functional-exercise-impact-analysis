@@ -1,5 +1,5 @@
 """
-Script: joint-flexibility-tracking.py
+Script: joint-health-vs-muscle-soreness.py
 Purpose: This program generates a chart of that displays a daily  Joint Health (Flexibility and Soreness) 
          scores compared to muscle soreness scores for a user-defined time frame. All data is 
          extracted from the fitness-log.ods spreadsheet - sheet 'Daily_Health_Log'. Data in the 
@@ -34,7 +34,7 @@ joints = analytics.format_joints_list( \
      ("hip",False),("knee",False),("ankle",False)] \
     )
 start_date = pd.to_datetime("2026-07-01")
-end_date = pd.to_datetime("2026-07-18")
+end_date = pd.to_datetime("2026-07-22")
 output_type = "file" # file or online
 """
 User Set Variables - End
@@ -105,7 +105,7 @@ for joint in [j[0] for j in joints if j[1]]:
         print("-" * 60)
         for extension in analytics.file_extensions:     
             try:
-                name = f"{analytics.health_analysis_charts}{joint.lower()}-joint-health-vs-muscle-soreness-for-{file_date}"
+                name = f"{analytics.health_analysis_charts}{joint.lower()}-joint-health-vs-muscle-soreness-for-{file_date}".lower()
                 filename = name + extension
                 print(f"Creating {filename}")
                 plt.savefig(filename)   

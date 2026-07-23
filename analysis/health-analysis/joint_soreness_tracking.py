@@ -27,7 +27,7 @@ User Set Variables - Start
 joints = [("Shoulder",True),("Elbow",True),("Wrist",True), \
           ("Hip",True),("Knee",True),("Ankle",True)]
 start_date = pd.to_datetime("2026-07-01")
-end_date = pd.to_datetime("2026-07-15")
+end_date = pd.to_datetime("2026-07-22")
 output_type = "file" # file or online
 """
 User Set Variables - End
@@ -93,7 +93,7 @@ if output_type == "file":
     print("-" * 60)
     for extension in analytics.file_extensions:     
         try:
-            name = f"{analytics.health_analysis_charts}joint-soreness-tracking-{file_date}"
+            name = f"{analytics.health_analysis_charts}joint-soreness-tracking-{file_date}".lower()
             filename = name + extension
             print(f"Creating {filename}")
             plt.savefig(filename)
