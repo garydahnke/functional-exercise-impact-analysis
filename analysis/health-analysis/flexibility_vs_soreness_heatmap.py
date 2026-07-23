@@ -1,5 +1,5 @@
 """
-Script: flexibility-vs-soreness-heatmap.py
+Script: flexibility_vs_soreness_heatmap.py
 Purpose: This program generates side-by-side bar chart (Flexibility vs Soreness — Single-Joint 
          Snapshot) to compare the flexibility to soreness of a selected joint for seven days. All 
          data is extracted from the fitness-log.ods spreadsheet - sheet 'Daily_Health_Log'. Data 

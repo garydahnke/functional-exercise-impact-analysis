@@ -1,5 +1,5 @@
 """
-Script: joint-health-vs-muscle-soreness.py
+Script: joint_health_vs_muscle_soreness.py
 Purpose: This program generates a chart of that displays a daily  Joint Health (Flexibility and Soreness) 
          scores compared to muscle soreness scores for a user-defined time frame. All data is 
          extracted from the fitness-log.ods spreadsheet - sheet 'Daily_Health_Log'. Data in the 

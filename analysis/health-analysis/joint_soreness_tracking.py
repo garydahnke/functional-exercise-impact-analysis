@@ -1,5 +1,5 @@
 """
-Script: joint-soreness-tracking.py
+Script: joint_soreness_tracking.py
 Purpose: This program generates line chart of Joint Soreness for a user-defined time frame. 
          The user selects the joint to display in the 'joints' variable described below. All
          data is extracted from the fitness-log.ods spreadsheet - sheet 'Daily_Health_Log'. Data 

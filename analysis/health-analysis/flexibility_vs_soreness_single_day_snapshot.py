@@ -1,5 +1,5 @@
 """
-Script: flexibility-vs-soreness-single-day-snapshot.py
+Script: flexibility_vs_soreness_single_day_snapshot.py
 Purpose: This program generates side-by-side bar chart (Flexibility vs Soreness — Single‑Day 
          Snapshot) to compare the flexibility to soreness of all joints for one day. All data is 
          extracted from the fitness-log.ods spreadsheet - sheet 'Daily_Health_Log'. Data in the 

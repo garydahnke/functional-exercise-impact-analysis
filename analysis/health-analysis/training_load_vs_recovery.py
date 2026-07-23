@@ -1,5 +1,5 @@
 """
-Script: monthly_muscle_soreness_tracking.py
+Script: training_load_vs_recovery.py
 Purpose: This program generates a monthly Training Load vs. Recovery chart based on data from
          fitness-log.ods spreadsheet - sheet 'Daily_Health_Log'. The user can select one or more 
          month within the same calendar year.
