@@ -83,7 +83,7 @@ if output_type == "file":
     print("-" * 60)
     for extension in analytics.file_extensions:   
         try:
-            name = f"{analytics.health_analysis_charts}flexibility-vs-soreness-{joint.lower()}-snapshot-{file_date}"
+            name = f"{analytics.health_analysis_charts}flexibility-vs-soreness-{joint.lower()}-snapshot-{file_date}".lower()
             filename = name + extension
             print(f"Creating {filename}")
             plt.savefig(filename)  

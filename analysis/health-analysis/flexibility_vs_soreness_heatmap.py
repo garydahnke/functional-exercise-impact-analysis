@@ -111,7 +111,7 @@ if output_type == "file":
     print("-" * 60)
     for extension in analytics.file_extensions:   
         try:
-            name = f"{analytics.health_analysis_charts}soreness-heatmap-for-{file_date_range}"
+            name = f"{analytics.health_analysis_charts}soreness-heatmap-for-{file_date_range}".lower()
             filename = name + extension
             print(f"Creating {filename}")
             plt.savefig(filename)
@@ -146,7 +146,7 @@ if output_type == "file":
     print("-" * 60)
     for extension in analytics.file_extensions:   
         try:
-            name = f"{analytics.health_analysis_charts}flexbility-heatmap-for-{file_date_range}"
+            name = f"{analytics.health_analysis_charts}flexbility-heatmap-for-{file_date_range}".lower()
             filename = name + extension
             print(f"Creating {filename}")
             plt.savefig(filename)

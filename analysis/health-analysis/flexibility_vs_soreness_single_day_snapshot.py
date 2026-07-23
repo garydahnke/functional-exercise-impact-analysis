@@ -22,8 +22,8 @@ import numpy as np
 """
 User Set Variables - Start
 """
-start_date = pd.to_datetime("2026-07-12")
-end_date = pd.to_datetime("2026-07-15")
+start_date = pd.to_datetime("2026-07-20")
+end_date = pd.to_datetime("2026-07-22")
 output_type = "file" # file or online
 """
 User Set Variables - End
@@ -90,7 +90,7 @@ for date in chart_data["Date"]:
         print("-" * 60)
         for extension in analytics.file_extensions:   
             try:
-                name = f"{analytics.health_analysis_charts}flexibility-vs-soreness-single-day-snapshot-{file_date}"
+                name = f"{analytics.health_analysis_charts}flexibility-vs-soreness-single-day-snapshot-{file_date}".lower()
                 filename = name + extension
                 print(f"Creating {filename}")
                 plt.savefig(filename)   
