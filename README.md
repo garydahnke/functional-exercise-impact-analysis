@@ -147,10 +147,8 @@ Repository Structure
 - [Protein Consumption Charts](charts/protein-consumption/)
 - [Health Analysis Charts](charts/health-analysis/)
 
-Exercises
----------
+## Exercises
 [Exercises](/readme-appendices/readme-exercises.md)  
 
-Data Dictionary
----------------
+## Data Dictionary
 [Data Dictionary](/readme-appendices/readme-data-dictionary.md)
