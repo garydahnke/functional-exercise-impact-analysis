@@ -140,6 +140,13 @@ Repository Structure
 │
 └── README.md
 
+# Training Analytics Dashboard
+
+## 📊 Charts
+- [Weight Training Charts](charts/weight-training/)
+- [Protein Consumption Charts](charts/protein-consumption/)
+- [Health Analysis Charts](charts/health-analysis/)
+
 Exercises
 ---------
 [Exercises](/readme-appendices/readme-exercises.md)  
