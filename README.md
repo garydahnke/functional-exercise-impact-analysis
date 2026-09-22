@@ -131,10 +131,10 @@ Repository Structure
 │ ├── health-analysis   
 | ├── protein-consumption  
 | ├── weight-training   
-│ └── libraries     
-│ 
-├── readme-appendices/
-│
+│ └── libraries       
+│   
+├── readme-appendices/  
+│   
 └── README.md
 
 # Training Analytics Dashboard
