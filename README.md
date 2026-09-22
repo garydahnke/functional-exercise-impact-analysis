@@ -123,14 +123,14 @@ Repository Structure
 │  
 ├── charts/  
 │ ├── health-analysis  
-| ├── protein-consumption  
-| ├── trends   
+│ ├── protein-consumption  
+│ ├── trends   
 │ └── weight-training     
 │    
 ├── analysis/   
 │ ├── health-analysis   
-| ├── protein-consumption  
-| ├── weight-training   
+│ ├── protein-consumption  
+│ ├── weight-training   
 │ └── libraries       
 │   
 ├── readme-appendices/  
