@@ -121,18 +121,17 @@ Repository Structure
 │ ├── fitness-log.odp  
 │ └── archive/  
 │  
-├── notebooks/  
-│ ├── *.*  
-│ └── *.*  
+├── charts/  
+│ ├── health-analysis  
+| ├── protein-consumption
+| ├── trends
+│ └── weight-training  
 │  
-├── visualizations/  
-│ ├── charts/  
-│ │ ├── *.*  
-│ │ └──	*.*	  
-│ │  
-│ └── plots/  
-│   ├── *.*  
-│   └── *.* 
+├── analysis/  
+│ ├── health-analysis  
+| ├── protein-consumption
+| ├── weight-training 
+│ └── libraries   
 │
 ├── readme-appendices/
 │   ├── *.*  
