@@ -19,7 +19,13 @@ exercise_data.loc[:, "Active"] = exercise_data["Active"].fillna("")
 
 print("Exercise List")
 print("-------------")
-exercise_list = exercise_data["Exercise"].to_list()
+exercise_list = (
+    exercise_data[["Exercise", "Workout Type"]]
+    .drop_duplicates()
+    .values
+    .tolist()
+)
+print(exercise_list)
 for e in exercise_list:
     print(f'"{e}",')
 print("")
@@ -27,4 +33,5 @@ print("Exercise Elements List")
 print("----------------------")
 exercise_elements_list = [tuple(row) for row in exercise_data.itertuples(index=False, name=None)]
 for e in exercise_elements_list:
-    print(e,",")
+    if e[3] != "":
+        print(e,",")
