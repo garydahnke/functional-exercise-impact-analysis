@@ -54,14 +54,14 @@ This creates a consistent baseline for evaluating:
 Data Collection Structure
 -------------------------
 The data will be collected and stored in a spreadsheet consisting of 5 sheets. Three of these sheets contain the data collected. The remain two sheets
-contains deatils about exercises and sheets.
-Workouts - This sheet is used to log all weight training, CAR/Mobility, and tendon strengthening exercises.
-Daily Health Log - This sheet is used to track daily personal health markers including objective statistics and subjective measurements based on personal judgment.
-Assessments - This sheet contains activities, exercise, and other objective statistic that will be taken weekly or monthly to track progress to evaluate the impact of functional exercises on my health and weight training.
-Protein Consumption - This sheet contains data about the food consumed that contains protein, how much protein in grams, 
-Exercises - This sheet contains a list of exerices and associated information.
-Column Index - This sheet contains a definition of each column name and the sheet the column is used.
-Note that columns may be added or removed from any sheet to improve the process of collecting data for analysis.
+contains deatils about exercises and sheets.  
+Workouts - This sheet is used to log all weight training, CAR/Mobility, and tendon strengthening exercises.  
+Daily Health Log - This sheet is used to track daily personal health markers including objective statistics and subjective measurements based on personal judgment.  
+Assessments - This sheet contains activities, exercise, and other objective statistic that will be taken weekly or monthly to track progress to evaluate the impact of functional exercises on my health and weight training.  
+Protein Consumption - This sheet contains data about the food consumed that contains protein, how much protein in grams.  
+Exercises - This sheet contains a list of exerices and associated information.  
+Column Index - This sheet contains a definition of each column name and the sheet the column is used.  
+Note that columns may be added or removed from any sheet to improve the process of collecting data for analysis.  
 
 
 Planned Analysis
