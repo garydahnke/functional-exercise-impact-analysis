@@ -6,10 +6,9 @@ Purpose: This program generates side-by-side bar chart (Flexibility vs Soreness 
          spreadsheet is for one calendar year. A user can generate a chart for multiple days is
          possible.
          User Set Variables:
-         1. start_date - starting date of the data to be extracted
-         2. end_date - ending date of the data to be extracted
-         3. output_type - a flag to define the type of output for the chart 
-            options: file or online          
+         1. chart_date - starting date of the data to be extracted
+         2. output_type - a flag to define the type of output for the chart 
+            options: file (pdf, svg) or online         
 Author: Gary Dahnke
 Date: July 2026
 """
@@ -18,16 +17,29 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import analytics
 import numpy as np
+import sys, json
+
+is_called_from_ai_agent = False
+if len(sys.argv) > 1:
+    is_called_from_ai_agent = True
 
 """
 User Set Variables - Start
 """
-start_date = pd.to_datetime("2026-07-20")
-end_date = pd.to_datetime("2026-07-22")
-output_type = "file" # file or online
+if is_called_from_ai_agent:
+    arguments = json.loads(sys.argv[1])
+    chart_date = arguments["chart_date"]
+else:
+    chart_date = "2026-08-15" # User sets chart_date YYYY-MM-DD format
+if is_called_from_ai_agent:
+    arguments = json.loads(sys.argv[1])
+    output_type = arguments["output_type"]
+else:
+    output_type = "pdf" # User sets file (pdf, svg) or online
 """
 User Set Variables - End
 """
+
 # Retrieve all data from the 'Daily_Health_Log' sheet and load into a dataframe
 sheet = "Daily_Health_Log"
 try:
@@ -38,12 +50,8 @@ except FileNotFoundError:
 # Ensure the column is datetime
 daily_log_data["Date"] = pd.to_datetime(daily_log_data["Date"])
 
-# Define your range
-start = pd.to_datetime(start_date)
-end = pd.to_datetime(end_date)
-
 # Filter between start and end (inclusive)
-chart_data = daily_log_data[(daily_log_data["Date"] >= start) & (daily_log_data["Date"] <= end)]
+chart_data = daily_log_data[daily_log_data["Date"] == pd.to_datetime(chart_date)]
 
 for date in chart_data["Date"]:
     file_date = date.strftime("%Y-%b-%d")
@@ -85,22 +93,21 @@ for date in chart_data["Date"]:
     plt.tight_layout()
     
     # Output chart to a file or online
-    if output_type == "file":
-        # Save charts as *.svg and *.pdf files.
+    if output_type in analytics.file_extensions:
+        # Save charts as *.svg or *.pdf files.
         print("-" * 60)
-        for extension in analytics.file_extensions:   
-            try:
-                name = f"{analytics.health_analysis_charts}flexibility-vs-soreness-single-day-snapshot-{file_date}".lower()
-                filename = name + extension
-                print(f"Creating {filename}")
-                plt.savefig(filename)   
-            except FileNotFoundError:
-                print("Directory does not exist.")
-            except PermissionError:
-                print(f"No permission to write the {filename}.")
-            except OSError as e:
-                print(f"OS error occurred: {e}")
-        print(f"Files for {file_date} have been created.")
+        try:
+            name = f"{analytics.health_analysis_charts}flexibility-vs-soreness-single-day-snapshot-{file_date}".lower()
+            filename = name + "." + output_type
+            print(f"Creating {filename}")
+            plt.savefig(filename)   
+        except FileNotFoundError:
+            print("Directory does not exist.")
+        except PermissionError:
+            print(f"No permission to write the {filename}.")
+        except OSError as e:
+            print(f"OS error occurred: {e}")
+        print(f"File for {file_date} have been created.")
     else:
         # Generate image for chart. 
         print("-" * 60) 

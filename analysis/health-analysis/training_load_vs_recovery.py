@@ -8,7 +8,7 @@ Purpose: This program generates a monthly Training Load vs. Recovery chart based
          2. date_annotation -  a flag to display the date of each data point on the char
             options: Y or N
          3. output_type - a flag to define the type of output for the chart 
-            options: file or online
+            options: file (pdf, svg) or online
 Author: Gary Dahnke
 Date: July 2026
 """
@@ -18,21 +18,33 @@ import matplotlib.pyplot as plt
 import datetime
 import calendar
 import analytics
+import sys, json
+from datetime import datetime
+
+is_called_from_ai_agent = False
+if len(sys.argv) > 1:
+    is_called_from_ai_agent = True
 
 """
 User Set Variables - Start
 """
-# Fitness Log Spreadsheet
-month_name_list = []
-# month_name_list = ["May","June","July"]
-# month_name_list = ["May","June"]
-month_number_list = []
-if len(month_name_list) > 0:
-    month_number_list = [datetime.datetime.strptime(month_name, "%B").month  \
-                        for month_name in month_name_list]
-# Display dates on chart
-date_annotation = "Y"
-output_type = "file" # file or online
+if is_called_from_ai_agent:
+    arguments = json.loads(sys.argv[1])
+    month_name = arguments["month_name"]
+else:
+    month_name = "August" # User sets the month name
+
+if is_called_from_ai_agent:
+    arguments = json.loads(sys.argv[1])
+    date_annotation = arguments["date_annotation"]
+else:
+    date_annotation = "Y"
+
+if is_called_from_ai_agent:
+    arguments = json.loads(sys.argv[1])
+    output_type = arguments["output_type"]
+else:
+    output_type = "pdf" # User sets file (pdf, svg) or online
 """
 User Set Variables - End
 """
@@ -46,8 +58,7 @@ except FileNotFoundError:
 
 # Retrieve the year of the data on the sheet into a dataframe
 year = str(workout_data["Date"].dt.year.unique()[0])    
-if len(month_number_list) == 0:
-    month_number_list = list(workout_data["Date"].dt.month.unique()) 
+month_number = analytics.month_name_to_number(month_name)
 
 # Retrieve a exercises that are of type 'Weight Training' into a dataframe
 weight_train_dates = workout_data.loc[workout_data["Workout Type"] == "Weight Training","Date"].unique()
@@ -88,75 +99,73 @@ merged_data = pd.merge(
 )
 
 # Process each month of data to create the charts as files or display online 
-for month_number in month_number_list:
-    month_name = calendar.month_name[month_number]
-    # Load all the data for the month select from the intial dataframe
-    chart_data=merged_data.loc[merged_data["Date"].dt.month == month_number, \
-        ["Date","Workout Type","Muscle Soreness"]]
+month_name = calendar.month_name[month_number]
+# Load all the data for the month select from the intial dataframe
+chart_data=merged_data.loc[merged_data["Date"].dt.month == month_number, \
+    ["Date","Workout Type","Muscle Soreness"]]
 
-    # Split all date into days when weight training occured and did not occur
-    weight_train_chart_data=chart_data.loc[chart_data["Workout Type"] == "Weight Training", \
-        ["Date","Workout Type","Muscle Soreness"]]
-    no_weight_train_chart_data=chart_data.loc[chart_data["Workout Type"] == "No Weight Training", \
-        ["Date","Workout Type","Muscle Soreness"]]
+# Split all date into days when weight training occured and did not occur
+weight_train_chart_data=chart_data.loc[chart_data["Workout Type"] == "Weight Training", \
+    ["Date","Workout Type","Muscle Soreness"]]
+no_weight_train_chart_data=chart_data.loc[chart_data["Workout Type"] == "No Weight Training", \
+    ["Date","Workout Type","Muscle Soreness"]]
 
-    # Plot chart
-    plt.figure(figsize=(12,6))
-    # Load data for all dates in the chart from chart_data
-    plt.plot(chart_data["Date"], chart_data["Muscle Soreness"], label="Daily Muscle Soreness (1-10)")
+# Plot chart
+plt.figure(figsize=(12,6))
+# Load data for all dates in the chart from chart_data
+plt.plot(chart_data["Date"], chart_data["Muscle Soreness"], label="Daily Muscle Soreness (1-10)")
 
-    # Load data for all dates when weight training occured
-    plt.scatter(weight_train_chart_data["Date"], weight_train_chart_data["Muscle Soreness"],
-                c="red", label="Weight Training", marker="o")
-    # Load data for all dates when no weight training occured
-    plt.scatter(no_weight_train_chart_data["Date"], no_weight_train_chart_data["Muscle Soreness"],
-                c="green", label="No Weight Training", marker="o")
+# Load data for all dates when weight training occured
+plt.scatter(weight_train_chart_data["Date"], weight_train_chart_data["Muscle Soreness"],
+            c="red", label="Weight Training", marker="o")
+# Load data for all dates when no weight training occured
+plt.scatter(no_weight_train_chart_data["Date"], no_weight_train_chart_data["Muscle Soreness"],
+            c="green", label="No Weight Training", marker="o")
 
-    # Display the month and day as an annotation if selected
-    if (date_annotation.casefold() == "y"):
-        for date, soreness in zip(weight_train_chart_data["Date"], weight_train_chart_data["Muscle Soreness"]):
-            plt.annotate(f"{date.strftime("%b-%d")}",
-                        xy=(date, soreness),
-                        xytext=(0,-15),  # offset text upward
-                        textcoords="offset points",
-                        ha="center",
-                        color="red")
-        for date, soreness in zip(no_weight_train_chart_data["Date"], no_weight_train_chart_data["Muscle Soreness"]):
-            plt.annotate(f"{date.strftime("%b-%d")}",
-                        xy=(date, soreness),
-                        xytext=(0,-15),  # offset text upward
-                        textcoords="offset points",
-                        ha="center",
-                        color="green")   
+# Display the month and day as an annotation if selected
+if (date_annotation.casefold() == "y"):
+    for date, soreness in zip(weight_train_chart_data["Date"], weight_train_chart_data["Muscle Soreness"]):
+        plt.annotate(f"{date.strftime("%b-%d")}",
+                    xy=(date, soreness),
+                    xytext=(0,-15),  # offset text upward
+                    textcoords="offset points",
+                    ha="center",
+                    color="red")
+    for date, soreness in zip(no_weight_train_chart_data["Date"], no_weight_train_chart_data["Muscle Soreness"]):
+        plt.annotate(f"{date.strftime("%b-%d")}",
+                    xy=(date, soreness),
+                    xytext=(0,-15),  # offset text upward
+                    textcoords="offset points",
+                    ha="center",
+                    color="green")   
 
-    plt.title(f"Training Load vs. Recovery - {month_name} {year}")
-    plt.xlabel("Date")
-    plt.ylabel("Low     -     Muscle Soreness on Next Day     -     High")
-    plt.yticks(range(1,11))
-    plt.tight_layout()
-    plt.legend()
-    plt.xticks(rotation=30)
+plt.title(f"Training Load vs. Recovery - {month_name} {year}")
+plt.xlabel("Date")
+plt.ylabel("Low     -     Muscle Soreness on Next Day     -     High")
+plt.yticks(range(1,11))
+plt.tight_layout()
+plt.legend()
+plt.xticks(rotation=30)
 
-    # Output chart to a file or online
-    if output_type == "file":
-        # Save charts as *.svg and *.pdf files.
-        print("-" * 60)
-        file_month_name = datetime.datetime.strptime(month_name, "%B").strftime("%b")
-        for extension in analytics.file_extensions:     
-            try:
-                name = f"{analytics.health_analysis_charts}training-load-vs-recovery-for-{year}-{file_month_name.lower()}"
-                filename = name + extension
-                print(f"Creating {filename}")
-                plt.savefig(filename)    
-            except FileNotFoundError:
-                print("Directory does not exist.")
-            except PermissionError:
-                print(f"No permission to write the {filename}.")
-            except OSError as e:
-                print(f"OS error occurred: {e}")
-        print(f"Files for {month_name} of {year} have been created.")
-    else:
-        # Generate image for chart.  
-        print("-" * 60)
-        print(f"Generating chart for {month_name} of {year}...")
-        plt.show()
+# Output chart to a file or online
+if output_type in analytics.file_extensions:
+    # Save charts as *.svg or *.pdf files.
+    print("-" * 60)
+    file_month_name = datetime.strptime(month_name, "%B").strftime("%b")
+    try:
+        name = f"{analytics.health_analysis_charts}training-load-vs-recovery-for-{year}-{file_month_name.lower()}"
+        filename = name + "." + output_type
+        print(f"Creating {filename}")
+        plt.savefig(filename)    
+    except FileNotFoundError:
+        print("Directory does not exist.")
+    except PermissionError:
+        print(f"No permission to write the {filename}.")
+    except OSError as e:
+        print(f"OS error occurred: {e}")
+    print(f"File for {month_name} of {year} have been created.")
+else:
+    # Generate image for chart.  
+    print("-" * 60)
+    print(f"Generating chart for {month_name} of {year}...")
+    plt.show()

@@ -1,18 +1,12 @@
 """
 Script: flexibility_vs_soreness_heatmap.py
-Purpose: This program generates side-by-side bar chart (Flexibility vs Soreness — Single-Joint 
-         Snapshot) to compare the flexibility to soreness of a selected joint for seven days. All 
-         data is extracted from the fitness-log.ods spreadsheet - sheet 'Daily_Health_Log'. Data 
-         in the spreadsheet is for one calendar year. 
+Purpose: This program generates two heatmaps (Flexibility Heatmap and Soreness Heatmap) for all joint
+         for a user set month name or start date. The data is extracted from the fitness-log.ods 
+         spreadsheet - sheet 'Daily_Health_Log'. Data in the spreadsheet is for one calendar year. 
          User Set Variables:
-         1. month_name - name of month to generate charts; this value will override start_date
-                         if this value is set
-         2. start_date - starting date of the data to be extracted; leave mont_name empty
-                         to use the start_date
-         3. number_of_days - number of days from start_date use to define an end date;
-                             max value is 31
-         4. output_type - a flag to define the type of output for the chart 
-            options: file or online          
+         1. month_name - name of month to generate charts
+         2. output_type - a flag to define the type of output for the chart 
+            options: file (pdf, svg) or online          
 Author: Gary Dahnke
 Date: July 2026
 """
@@ -24,26 +18,30 @@ import numpy as np
 from datetime import datetime, timedelta
 import seaborn as sns
 import calendar
+import sys, json
+
+is_called_from_ai_agent = False
+if len(sys.argv) > 1:
+    is_called_from_ai_agent = True
 
 """
 User Set Variables - Start
 """
-month_name = "July"
-start_date = "2026-07-01" # YYYY-MM-DD format
-number_of_days = 30 # max value of 31
-output_type = "file" # file or online
+if is_called_from_ai_agent:
+    arguments = json.loads(sys.argv[1])
+    month_name = arguments["month_name"]
+else:
+    month_name = "August" # User sets the month name
+
+if is_called_from_ai_agent:
+    arguments = json.loads(sys.argv[1])
+    output_type = arguments["output_type"]
+else:
+    output_type = "pdf" # User sets file (pdf, svg) or online
 """
 User Set Variables - End
 """
-# Calculate values from User Set Variables
-start_date_dt = datetime(int(start_date[0:4]),int(start_date[5:7]),int(start_date[8:]))
-if len(month_name.strip()) == 0:
-    if number_of_days <= 45:
-        end_date = start_date_dt + timedelta(days=number_of_days)
-    else:
-        end_date = start_date_dt + timedelta(days=31)
-else:
-    month_number = datetime.strptime(month_name.strip(), "%B").month
+month_number = datetime.strptime(month_name.strip(), "%B").month
 
 # Retrieve all data from the 'Daily_Health_Log' sheet and load into a dataframe
 sheet = "Daily_Health_Log"
@@ -54,20 +52,14 @@ except FileNotFoundError:
 
 # Create a list of columns with flexibility and soreness values to be extracted from
 # the dataframe daily_log_data
-joints = ["Shoulder", "Elbow", "Wrist", "Hip", "Knee", "Ankle"]
-joint_columns = [f"{joint} Flexibility" for joint in joints] + \
-                [f"{joint} Soreness" for joint in joints]
+joint_columns = [f"{joint} Flexibility" for joint in analytics.joints] + \
+                [f"{joint} Soreness" for joint in analytics.joints]
 for column in joint_columns:
     daily_log_data.loc[:, column] = daily_log_data[column].replace("N/A", 0)
     daily_log_data.loc[:, column] = daily_log_data[column].fillna(0)
 
-# Keep the rows in the dataframe daily_log_data that are defined by the 'User Set Variables'
-# for dates 
-if (len(month_name.strip()) > 0):
-    month_number = datetime.strptime(month_name, "%B").month
-    daily_log_data = daily_log_data[daily_log_data["Date"].dt.month == month_number]
-else:
-    daily_log_data = daily_log_data[(daily_log_data["Date"] >= start_date) & (daily_log_data["Date"] <= end_date)]
+month_number = datetime.strptime(month_name, "%B").month
+daily_log_data = daily_log_data[daily_log_data["Date"].dt.month == month_number]
 
 # Reconstruct the dataframe so the columns in the dataframe (Flexibility and Soreness ratings)
 # are now row values and the Date column value are now the first row in the data frame     
@@ -75,7 +67,7 @@ rows = []
 for _, row in daily_log_data.iterrows():
     date = row["Date"]
     axis_date = row["Date"].strftime("%b-%d")
-    for joint in joints:
+    for joint in analytics.joints:
         flexibility_column = f"{joint} Flexibility"
         soreness_column = f"{joint} Soreness"
         rows.append({
@@ -106,22 +98,21 @@ plt.xticks(rotation=45)
 plt.title(title)
 
 # Output chart to a file or online
-if output_type == "file":
-    # Save charts as *.svg and *.pdf files. 
+if output_type in analytics.file_extensions:
+    # Save charts as *.svg or *.pdf files. 
     print("-" * 60)
-    for extension in analytics.file_extensions:   
-        try:
-            name = f"{analytics.health_analysis_charts}soreness-heatmap-for-{file_date_range}".lower()
-            filename = name + extension
-            print(f"Creating {filename}")
-            plt.savefig(filename)
-        except FileNotFoundError:
-            print("Directory does not exist.")
-        except PermissionError:
-            print(f"No permission to write the {filename}.")
-        except OSError as e:
-            print(f"OS error occurred: {e}")
-    print(f"Files for {file_date_range} have been created.")
+    try:
+        name = f"{analytics.health_analysis_charts}soreness-heatmap-for-{file_date_range}".lower()
+        filename = name + "." + output_type
+        print(f"Creating {filename}")
+        plt.savefig(filename)
+    except FileNotFoundError:
+        print("Directory does not exist.")
+    except PermissionError:
+        print(f"No permission to write the {filename}.")
+    except OSError as e:
+        print(f"OS error occurred: {e}")
+    print(f"File for {file_date_range} have been created.")
 else:
     # Generate image for chart. 
     print("-" * 60) 
@@ -141,22 +132,21 @@ plt.xticks(rotation=45)
 plt.title(title)
 
 # Output chart to a file or online
-if output_type == "file":
-    # Save charts as *.svg and *.pdf files.    
+if output_type in analytics.file_extensions:
+    # Save charts as *.svg or *.pdf files.    
     print("-" * 60)
-    for extension in analytics.file_extensions:   
-        try:
-            name = f"{analytics.health_analysis_charts}flexbility-heatmap-for-{file_date_range}".lower()
-            filename = name + extension
-            print(f"Creating {filename}")
-            plt.savefig(filename)
-        except FileNotFoundError:
-            print("Directory does not exist.")
-        except PermissionError:
-            print(f"No permission to write the {filename}.")
-        except OSError as e:
-            print(f"OS error occurred: {e}")
-    print(f"Files for {file_date_range} have been created.")
+    try:
+        name = f"{analytics.health_analysis_charts}flexbility-heatmap-for-{file_date_range}".lower()
+        filename = name + "." + output_type
+        print(f"Creating {filename}")
+        plt.savefig(filename)
+    except FileNotFoundError:
+        print("Directory does not exist.")
+    except PermissionError:
+        print(f"No permission to write the {filename}.")
+    except OSError as e:
+        print(f"OS error occurred: {e}")
+    print(f"File for {file_date_range} have been created.")
 else:
     # Generate image for chart.
     print("-" * 60)  
