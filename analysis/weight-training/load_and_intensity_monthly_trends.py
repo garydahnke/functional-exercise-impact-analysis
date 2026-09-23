@@ -1,5 +1,5 @@
 """
-Script: load_and_intensity_trends.py
+Script: load_and_intensity_monthly_trends.py
 Purpose: This program generates Load and Intensity Trends chart for a selected or all exercises from 
          the "Workouts" sheet for each weight training sesssion. Total Volume shows how much work you 
          performed. Intensity shows how hard the work was.    
@@ -16,8 +16,12 @@ Purpose: This program generates Load and Intensity Trends chart for a selected o
          Data is pulled from fitness-log.ods spreadsheet - sheet 'Workouts'. Data in the spreadsheet is 
          for one calendar year.
          User Set Variables:
-         1. quarter - first (1), second (2), third (3), or fourth (4) quarter                 
-                 
+         1. execises - a list of weight training exercise that the user wants to create charts. If the
+            list is left, a default list of all weight training exercise will be processed
+         2. month_name - name of month to generate charts
+         3. chart_type - select which types of data points (Total Volume, Total Intensity, Average Intensity)
+            to display on chart
+         4. output_type - a flag to define the type of output for the chart; options: file or online          
 Author: Gary Dahnke
 Date: July 2026
 """
@@ -27,18 +31,42 @@ import matplotlib.pyplot as plt
 import analytics
 import math
 import plotly.graph_objects as go
+import sys, json
+from datetime import datetime
+
+is_called_from_ai_agent = False
+if len(sys.argv) > 1:
+    is_called_from_ai_agent = True
 
 """
 User Set Variables - Start
 """
 # To run one or more selected exercises, populate the list 'exercises'. Otherwise, the program will
 # create a list with all exercises currently listed in the spreadsheet.
-chart_quarter = 3
-exercises = []
-exercises = analytics.get_weight_training_exercises()
-# exercises = ["Leg Press", "Hip Thrusts"]
-# exercises = ["Pectoral Flies", "Preacher Curls"]
-chart_type = [("Average Intensity",True),("Total Intensity",True),("Total Volume",True)]
+if is_called_from_ai_agent:
+    arguments = json.loads(sys.argv[1])
+    month_name = arguments["month_name"]
+else:
+    month_name = "August" # User sets the month name
+
+if is_called_from_ai_agent:
+    arguments = json.loads(sys.argv[1])
+    exercises = arguments["exercises"]
+else:
+    exercises = ["Pectoral Flies", "Preacher Curls"]
+#    exercises = []
+
+if is_called_from_ai_agent:
+    arguments = json.loads(sys.argv[1])
+    chart_type = arguments["chart_type"]
+else:
+    chart_type = [("Average Intensity",True),("Total Intensity",True),("Total Volume",True)]
+
+if is_called_from_ai_agent:
+    arguments = json.loads(sys.argv[1])
+    output_type = arguments["output_type"]
+else:
+    output_type = "file" # User sets file or online
 """
 User Set Variables - End
 """
@@ -57,10 +85,6 @@ weight_training_data = exercise_data.loc[(exercise_data["Workout Type"] == "Weig
 # Select the rows from the dataframe that are exercises in the list 'exercises'.
 if len(exercises) == 0:
     exercises = list(weight_training_data["Exercise"].unique())
-
-chart_year = weight_training_data["Date"].dt.year.unique()[0]
-start_date = analytics.first_day_of_quarter(chart_quarter, chart_year)
-end_date = analytics.last_day_of_quarter(chart_quarter, chart_year)
 
 # Traverse through each exercise in the list to accomplish the following:
 #   1. Set the flags for which types of data points will be display on the chart
@@ -92,14 +116,16 @@ for type in chart_type:
         total_volume = True
         break
 
+# Define date range
+chart_year = weight_training_data["Date"].dt.year.unique()[0]
+start_date = analytics.first_day_of_month(month_name, chart_year).strftime("%Y-%m-%d")
+end_date = analytics.last_day_of_month(month_name, chart_year).strftime("%Y-%m-%d")
+
 # Loop through each exercise and generate a chart via HTML.
 for current_exercise in exercises:
     chart_data = weight_training_data[(weight_training_data["Exercise"] == current_exercise) & \
-                 (weight_training_data["Date"] >= start_date.strftime("%Y-%m-%d")) & \
-                 (weight_training_data["Date"] <= end_date.strftime("%Y-%m-%d"))].copy()
-    if chart_data.empty:
-        print(f"No data for {current_exercise} between {start_date.strftime("%Y-%m-%d")} and {end_date.strftime("%Y-%m-%d")}.")
-        continue
+                 (weight_training_data["Date"] >= start_date) & \
+                 (weight_training_data["Date"] <= end_date)].copy()
     # Ensure Date is datetime
     chart_data["Date"] = pd.to_datetime(chart_data["Date"])
     # Sort by date
@@ -107,17 +133,15 @@ for current_exercise in exercises:
 
     chart_start_date = chart_data["Date"].min()
     chart_end_date = chart_data["Date"].max()
- 
-    
-    # Define date range for title
-    if start_date != end_date:
-        date_range = f"{start_date.strftime("%B %d, %Y")} -".strip() + " " + \
-            f"{end_date.strftime("%B %d, %Y")}".strip()
-        file_date = f"{start_date.strftime("%Y-%b-%d")}" + "-" + f"{end_date.strftime("%Y-%b-%d")}" 
-    else:
-        date_range = f"{start_date.strftime("%B %d, %Y")}"
-        file_date = f"{start_date.strftime("%Y-%b-%d")}"
 
+    # Define date range for title
+    file_start_date = datetime.strptime(start_date, "%Y-%m-%d").strftime("%Y-%b-%d")
+    file_end_date = datetime.strptime(end_date, "%Y-%m-%d").strftime("%Y-%b-%d")  
+    file_date = f"{file_start_date}" + "-" + f"{file_end_date}" 
+    date_range_start_date = datetime.strptime(start_date, "%Y-%m-%d").strftime("%B %d, %Y")
+    date_range_end_date = datetime.strptime(end_date, "%Y-%m-%d").strftime("%B %d, %Y")    
+    date_range = f"{date_range_start_date} {date_range_end_date}"
+    
     chart_data["Reps"] = chart_data["Reps"].apply(lambda x: [int(i) for i in x.replace(" ", "").split(",")])
     chart_data["Weight"] = chart_data["Weight"].apply(
         lambda x: (
@@ -231,7 +255,7 @@ for current_exercise in exercises:
     )
 
     try:
-        filename = f"{analytics.weight_training_charts}load-and-intensity-trends" \
+        filename = f"{analytics.weight_training_charts}load-and-intensity-trends-for" \
                    f"-{current_exercise.lower().replace(" ","-")}-for-{file_date.lower()}.html"
         print(f"Creating {filename}")
         fig.write_html(filename)

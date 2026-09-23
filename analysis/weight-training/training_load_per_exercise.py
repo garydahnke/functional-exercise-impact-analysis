@@ -5,11 +5,10 @@ Purpose: This program generates Training Load per Exercise chart for a selected 
          for every set per exercise in that weight training session. Data is pulled from fitness-log.ods  
          spreadsheet - sheet 'Workouts'. Data in the spreadsheet is for one calendar year.
          User Set Variables:
-         1. spreadsheet - fitness log spreadsheet
-         2. execises - a list of weight training exercise that the user wants to create charts. If the
+         1. execises - a list of weight training exercise that the user wants to create charts. If the
             list is left, a default list of all weight training exercise will be processed
          2. output_type - a flag to define the type of output for the chart 
-            options: file or online          
+            options: file (pdf, svg) or online         
 Author: Gary Dahnke
 Date: July 2026
 """
@@ -17,15 +16,27 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import analytics
+import sys, json
+from datetime import datetime
+
+is_called_from_ai_agent = False
+if len(sys.argv) > 1:
+    is_called_from_ai_agent = True
 
 """
 User Set Variables - Start
 """
-# To run one or more selected exercises, populate the list 'exercises'. Otherwise, the program will
-# create a list with all exercises currently listed in the spreadsheet.
-exercises = []
-# exercises = ["Leg Press", "Calf Raises"]
-output_type = "file" # file or online
+if is_called_from_ai_agent:
+    arguments = json.loads(sys.argv[1])
+    exercises = arguments["exercises"]
+else:
+    exercises = ["Leg Press", "Hamstring Curls", "Leg Extensions"]
+
+if is_called_from_ai_agent:
+    arguments = json.loads(sys.argv[1])
+    output_type = arguments["output_type"]
+else:
+    output_type = "pdf" # User sets file (pdf, svg) or online
 """
 User Set Variables - End
 """
@@ -96,22 +107,21 @@ for current_exercise in exercises:
     plt.legend()
 
     # Output chart to a file or online
-    if output_type == "file":
-        # Save charts as *.svg and *.pdf files.
+    if output_type in analytics.file_extensions:
+        # Save charts as *.svg or *.pdf files.
         print("-" * 60)
-        for extension in analytics.file_extensions:     
-            try:
-                name = f"{analytics.weight_training_charts}training-load-for-{current_exercise.lower().replace(" ","-")}"
-                filename = name + extension
-                print(f"Creating {filename}")
-                plt.savefig(filename)   
-            except FileNotFoundError:
-                print("Directory does not exist.")
-            except PermissionError:
-                print(f"No permission to write the {filename}.")
-            except OSError as e:
-                print(f"OS error occurred: {e}")
-        print(f"Files for execise {current_exercise} have been created.")
+        try:
+            name = f"{analytics.weight_training_charts}training-load-for-{current_exercise.lower().replace(" ","-")}"
+            filename = name + "." + output_type 
+            print(f"Creating {filename}")
+            plt.savefig(filename)   
+        except FileNotFoundError:
+            print("Directory does not exist.")
+        except PermissionError:
+            print(f"No permission to write the {filename}.")
+        except OSError as e:
+            print(f"OS error occurred: {e}")
+        print(f"File for execise {current_exercise} have been created.")
     else:
         # Generate image for chart. 
         print("-" * 60) 
